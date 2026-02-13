@@ -69,7 +69,6 @@ const TTSControl: React.FC<TTSControlProps> = ({ bookKey, gridInsets }) => {
   const [shouldMountBackButton, setShouldMountBackButton] = useState(false);
   const [isBackButtonVisible, setIsBackButtonVisible] = useState(false);
   const backButtonTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const followingTTSLocationRef = useRef(true);
 
   const popupPadding = useResponsiveSize(POPUP_PADDING);
   const maxWidth = window.innerWidth - 2 * popupPadding;
@@ -229,47 +228,116 @@ const TTSControl: React.FC<TTSControlProps> = ({ bookKey, gridInsets }) => {
       viewSettings.ttsLocation = cfi;
       setViewSettings(bookKey, viewSettings);
 
-      if (!followingTTSLocationRef.current) return;
-
       const docs = view.renderer.getContents();
-      if (docs.some(({ doc }) => (doc.getSelection()?.toString().length ?? 0) > 0)) {
+      if (docs.length === 0) {
+        setShowBackToCurrentTTSLocation(true);
+        void eventDispatcher.dispatch('tts-highlight', { bookKey, cfi });
         return;
       }
 
-      const { doc, index: viewSectionIndex } = view.renderer.getContents()[0] as {
-        doc: Document;
-        index?: number;
+      const hasSelection = docs.some(({ doc }) => (doc.getSelection()?.toString().length ?? 0) > 0);
+
+      const followHighlight = async () => {
+        const { anchor, index: ttsSectionIndex } = view.resolveCFI(cfi);
+        if (!anchor || ttsSectionIndex === undefined) {
+          setShowBackToCurrentTTSLocation(true);
+          void eventDispatcher.dispatch('tts-highlight', {
+            bookKey,
+            cfi,
+            sectionIndex: ttsSectionIndex,
+          });
+          return;
+        }
+
+        const currentSectionIndex = docs[0]?.index;
+        if (currentSectionIndex !== ttsSectionIndex) {
+          if (hasSelection) {
+            setShowBackToCurrentTTSLocation(true);
+            void eventDispatcher.dispatch('tts-highlight', {
+              bookKey,
+              cfi,
+              sectionIndex: ttsSectionIndex,
+            });
+            return;
+          }
+          const resolved = view.resolveNavigation(cfi);
+          view.renderer.goTo?.(resolved);
+          await new Promise((resolve) => setTimeout(resolve, 120));
+        }
+
+        const updatedDocs = view.renderer.getContents();
+        const doc = updatedDocs.find((content) => content.index === ttsSectionIndex)?.doc;
+        if (!doc) {
+          setShowBackToCurrentTTSLocation(true);
+          void eventDispatcher.dispatch('tts-highlight', {
+            bookKey,
+            cfi,
+            sectionIndex: ttsSectionIndex,
+          });
+          return;
+        }
+
+        let range: Range | null = null;
+        try {
+          range = anchor(doc);
+        } catch {
+          setShowBackToCurrentTTSLocation(true);
+          void eventDispatcher.dispatch('tts-highlight', {
+            bookKey,
+            cfi,
+            sectionIndex: ttsSectionIndex,
+          });
+          return;
+        }
+
+        if (!range) {
+          setShowBackToCurrentTTSLocation(true);
+          void eventDispatcher.dispatch('tts-highlight', {
+            bookKey,
+            cfi,
+            sectionIndex: ttsSectionIndex,
+          });
+          return;
+        }
+
+        if (!hasSelection) {
+          if (!view.renderer.scrolled) {
+            view.renderer.scrollToAnchor(range);
+          } else {
+            const rect = range.getBoundingClientRect();
+            const { start, size, viewSize, sideProp } = view.renderer;
+            const positionStart =
+              rect[sideProp === 'height' ? 'y' : 'x'] + viewSettings.marginTopPx;
+            const positionEnd = rect[sideProp === 'height' ? 'height' : 'width'] + positionStart;
+            const offsetStart = view.book.dir === 'rtl' ? viewSize - positionStart : positionStart;
+            const offsetEnd = view.book.dir === 'rtl' ? viewSize - positionEnd : positionEnd;
+
+            const showHeader = viewSettings.showHeader;
+            const showFooter = viewSettings.showFooter;
+            const showBarsOnScroll = viewSettings.showBarsOnScroll;
+            const headerScrollOverlap = showHeader && showBarsOnScroll ? 44 : 0;
+            const footerScrollOverlap = showFooter && showBarsOnScroll ? 44 : 0;
+            const scrollingOverlap = viewSettings.scrollingOverlap;
+            const endInNextView = offsetEnd > start + size - footerScrollOverlap - scrollingOverlap;
+            const startInPrevView = offsetStart < start + headerScrollOverlap + scrollingOverlap;
+            if (endInNextView || startInPrevView) {
+              const scrollTo = offsetStart - headerScrollOverlap - scrollingOverlap;
+              view.renderer.scrollToAnchor(scrollTo / viewSize);
+            }
+          }
+          setShowBackToCurrentTTSLocation(false);
+        } else {
+          setShowBackToCurrentTTSLocation(true);
+        }
+        void eventDispatcher.dispatch('tts-highlight', {
+          bookKey,
+          cfi,
+          range,
+          sectionIndex: ttsSectionIndex,
+        });
       };
 
-      const { anchor, index: ttsSectionIndex } = view.resolveCFI(cfi);
-      if (viewSectionIndex !== ttsSectionIndex) {
-        return;
-      }
-
-      const range = anchor(doc);
-      if (!view.renderer.scrolled) {
-        view.renderer.scrollToAnchor(range);
-      } else {
-        const rect = range.getBoundingClientRect();
-        const { start, size, viewSize, sideProp } = view.renderer;
-        const positionStart = rect[sideProp === 'height' ? 'y' : 'x'] + viewSettings.marginTopPx;
-        const positionEnd = rect[sideProp === 'height' ? 'height' : 'width'] + positionStart;
-        const offsetStart = view.book.dir === 'rtl' ? viewSize - positionStart : positionStart;
-        const offsetEnd = view.book.dir === 'rtl' ? viewSize - positionEnd : positionEnd;
-
-        const showHeader = viewSettings.showHeader;
-        const showFooter = viewSettings.showFooter;
-        const showBarsOnScroll = viewSettings.showBarsOnScroll;
-        const headerScrollOverlap = showHeader && showBarsOnScroll ? 44 : 0;
-        const footerScrollOverlap = showFooter && showBarsOnScroll ? 44 : 0;
-        const scrollingOverlap = viewSettings.scrollingOverlap;
-        const endInNextView = offsetEnd > start + size - footerScrollOverlap - scrollingOverlap;
-        const startInPrevView = offsetStart < start + headerScrollOverlap + scrollingOverlap;
-        if (endInNextView || startInPrevView) {
-          const scrollTo = offsetStart - headerScrollOverlap - scrollingOverlap;
-          view.renderer.scrollToAnchor(scrollTo / viewSize);
-        }
-      }
+      void followHighlight();
     };
 
     ttsController.addEventListener('tts-need-auth', handleNeedAuth);
@@ -308,8 +376,6 @@ const TTSControl: React.FC<TTSControlProps> = ({ bookKey, gridInsets }) => {
       if (range) {
         view?.tts?.highlight(range);
       }
-    } else {
-      setShowBackToCurrentTTSLocation(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [progress]);
@@ -322,6 +388,7 @@ const TTSControl: React.FC<TTSControlProps> = ({ bookKey, gridInsets }) => {
 
     const resolved = view.resolveNavigation(ttsLocation);
     view.renderer.goTo?.(resolved);
+    setShowBackToCurrentTTSLocation(false);
   };
 
   const getTTSTargetLang = useCallback((): string | null => {
@@ -405,6 +472,7 @@ const TTSControl: React.FC<TTSControlProps> = ({ bookKey, gridInsets }) => {
     if (bookKey !== ttsBookKey) return;
     if (ttsOnRef.current) return;
     ttsOnRef.current = true;
+    setShowBackToCurrentTTSLocation(false);
 
     const view = getView(bookKey);
     const progress = getProgress(bookKey);
@@ -768,14 +836,12 @@ const TTSControl: React.FC<TTSControlProps> = ({ bookKey, gridInsets }) => {
 
   useEffect(() => {
     if (showBackToCurrentTTSLocation) {
-      followingTTSLocationRef.current = false;
       setShouldMountBackButton(true);
       const fadeInTimeout = setTimeout(() => {
         setIsBackButtonVisible(true);
       }, 10);
       return () => clearTimeout(fadeInTimeout);
     } else {
-      followingTTSLocationRef.current = true;
       setIsBackButtonVisible(false);
       if (backButtonTimeoutRef.current) {
         clearTimeout(backButtonTimeoutRef.current);
