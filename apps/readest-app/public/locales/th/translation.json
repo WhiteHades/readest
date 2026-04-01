@@ -1122,5 +1122,8 @@
   "Push Highlights": "พุชไฮไลต์",
   "Highlights synced to Readwise": "ซิงค์ไฮไลต์ไปยัง Readwise แล้ว",
   "Readwise sync failed: no internet connection": "การซิงค์ Readwise ล้มเหลว: ไม่มีการเชื่อมต่ออินเทอร์เน็ต",
-  "Readwise sync failed: {{error}}": "การซิงค์ Readwise ล้มเหลว: {{error}}"
+  "Readwise sync failed: {{error}}": "การซิงค์ Readwise ล้มเหลว: {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

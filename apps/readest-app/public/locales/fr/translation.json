@@ -1146,5 +1146,8 @@
   "Push Highlights": "Pousser les surlignages",
   "Highlights synced to Readwise": "Surlignages synchronisés avec Readwise",
   "Readwise sync failed: no internet connection": "Échec de la synchronisation Readwise : pas de connexion internet",
-  "Readwise sync failed: {{error}}": "Échec de la synchronisation Readwise : {{error}}"
+  "Readwise sync failed: {{error}}": "Échec de la synchronisation Readwise : {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

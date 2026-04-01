@@ -1182,5 +1182,8 @@
   "Push Highlights": "إرسال التمييزات",
   "Highlights synced to Readwise": "تمت مزامنة التمييزات مع Readwise",
   "Readwise sync failed: no internet connection": "فشلت مزامنة Readwise: لا يوجد اتصال بالإنترنت",
-  "Readwise sync failed: {{error}}": "فشلت مزامنة Readwise: {{error}}"
+  "Readwise sync failed: {{error}}": "فشلت مزامنة Readwise: {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

@@ -1134,5 +1134,8 @@
   "Push Highlights": "Skicka markeringar",
   "Highlights synced to Readwise": "Markeringar synkroniserade till Readwise",
   "Readwise sync failed: no internet connection": "Readwise-synkronisering misslyckades: ingen internetanslutning",
-  "Readwise sync failed: {{error}}": "Readwise-synkronisering misslyckades: {{error}}"
+  "Readwise sync failed: {{error}}": "Readwise-synkronisering misslyckades: {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

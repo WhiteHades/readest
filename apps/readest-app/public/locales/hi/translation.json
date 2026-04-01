@@ -1134,5 +1134,8 @@
   "Push Highlights": "हाइलाइट्स भेजें",
   "Highlights synced to Readwise": "हाइलाइट्स Readwise में सिंक हो गए",
   "Readwise sync failed: no internet connection": "Readwise सिंक विफल रहा: कोई इंटरनेट कनेक्शन नहीं",
-  "Readwise sync failed: {{error}}": "Readwise सिंक विफल रहा: {{error}}"
+  "Readwise sync failed: {{error}}": "Readwise सिंक विफल रहा: {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

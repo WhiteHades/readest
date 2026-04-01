@@ -1146,5 +1146,8 @@
   "Push Highlights": "Invia evidenziazioni",
   "Highlights synced to Readwise": "Evidenziazioni sincronizzate su Readwise",
   "Readwise sync failed: no internet connection": "Sincronizzazione Readwise fallita: nessuna connessione internet",
-  "Readwise sync failed: {{error}}": "Sincronizzazione Readwise fallita: {{error}}"
+  "Readwise sync failed: {{error}}": "Sincronizzazione Readwise fallita: {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

@@ -1158,5 +1158,8 @@
   "Push Highlights": "Отправить выделения",
   "Highlights synced to Readwise": "Выделения синхронизированы с Readwise",
   "Readwise sync failed: no internet connection": "Синхронизация Readwise не удалась: нет интернет-соединения",
-  "Readwise sync failed: {{error}}": "Синхронизация Readwise не удалась: {{error}}"
+  "Readwise sync failed: {{error}}": "Синхронизация Readwise не удалась: {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

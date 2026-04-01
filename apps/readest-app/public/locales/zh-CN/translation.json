@@ -1122,5 +1122,8 @@
   "Push Highlights": "推送高亮内容",
   "Highlights synced to Readwise": "高亮内容已同步到 Readwise",
   "Readwise sync failed: no internet connection": "Readwise 同步失败：无网络连接",
-  "Readwise sync failed: {{error}}": "Readwise 同步失败：{{error}}"
+  "Readwise sync failed: {{error}}": "Readwise 同步失败：{{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

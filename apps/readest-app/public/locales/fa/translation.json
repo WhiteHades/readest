@@ -1134,5 +1134,8 @@
   "Push Highlights": "ارسال هایلایت‌ها",
   "Highlights synced to Readwise": "هایلایت‌ها با Readwise همگام‌سازی شدند",
   "Readwise sync failed: no internet connection": "همگام‌سازی Readwise ناموفق بود: اتصال اینترنت برقرار نیست",
-  "Readwise sync failed: {{error}}": "همگام‌سازی Readwise ناموفق بود: {{error}}"
+  "Readwise sync failed: {{error}}": "همگام‌سازی Readwise ناموفق بود: {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

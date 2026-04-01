@@ -1134,5 +1134,8 @@
   "Push Highlights": "சிறப்பம்சங்களை அனுப்பு",
   "Highlights synced to Readwise": "சிறப்பம்சங்கள் Readwise உடன் ஒத்திசைக்கப்பட்டன",
   "Readwise sync failed: no internet connection": "Readwise ஒத்திசைவு தோல்வியடைந்தது: இணைய இணைப்பு இல்லை",
-  "Readwise sync failed: {{error}}": "Readwise ஒத்திசைவு தோல்வியடைந்தது: {{error}}"
+  "Readwise sync failed: {{error}}": "Readwise ஒத்திசைவு தோல்வியடைந்தது: {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

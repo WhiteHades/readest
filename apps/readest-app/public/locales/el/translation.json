@@ -1134,5 +1134,8 @@
   "Push Highlights": "Προώθηση επισημάνσεων",
   "Highlights synced to Readwise": "Οι επισημάνσεις συγχρονίστηκαν στο Readwise",
   "Readwise sync failed: no internet connection": "Ο συγχρονισμός Readwise απέτυχε: δεν υπάρχει σύνδεση στο διαδίκτυο",
-  "Readwise sync failed: {{error}}": "Ο συγχρονισμός Readwise απέτυχε: {{error}}"
+  "Readwise sync failed: {{error}}": "Ο συγχρονισμός Readwise απέτυχε: {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

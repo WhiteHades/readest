@@ -1134,5 +1134,8 @@
   "Push Highlights": "Vurguları Gönder",
   "Highlights synced to Readwise": "Vurgular Readwise ile senkronize edildi",
   "Readwise sync failed: no internet connection": "Readwise senkronizasyonu başarısız: internet bağlantısı yok",
-  "Readwise sync failed: {{error}}": "Readwise senkronizasyonu başarısız: {{error}}"
+  "Readwise sync failed: {{error}}": "Readwise senkronizasyonu başarısız: {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

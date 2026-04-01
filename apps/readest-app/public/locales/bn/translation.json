@@ -1134,5 +1134,8 @@
   "Push Highlights": "হাইলাইট পাঠান",
   "Highlights synced to Readwise": "হাইলাইটগুলি Readwise এ সিঙ্ক করা হয়েছে",
   "Readwise sync failed: no internet connection": "Readwise সিঙ্ক ব্যর্থ হয়েছে: ইন্টারনেট সংযোগ নেই",
-  "Readwise sync failed: {{error}}": "Readwise সিঙ্ক ব্যর্থ হয়েছে: {{error}}"
+  "Readwise sync failed: {{error}}": "Readwise সিঙ্ক ব্যর্থ হয়েছে: {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

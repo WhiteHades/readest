@@ -1158,5 +1158,8 @@
   "Push Highlights": "Надіслати виділення",
   "Highlights synced to Readwise": "Виділення синхронізовано з Readwise",
   "Readwise sync failed: no internet connection": "Синхронізація Readwise не вдалася: немає інтернет-з'єднання",
-  "Readwise sync failed: {{error}}": "Синхронізація Readwise не вдалася: {{error}}"
+  "Readwise sync failed: {{error}}": "Синхронізація Readwise не вдалася: {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }

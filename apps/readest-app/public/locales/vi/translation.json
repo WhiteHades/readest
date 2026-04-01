@@ -1122,5 +1122,8 @@
   "Push Highlights": "Đẩy các phần đánh dấu",
   "Highlights synced to Readwise": "Các phần đánh dấu đã được đồng bộ với Readwise",
   "Readwise sync failed: no internet connection": "Đồng bộ Readwise thất bại: không có kết nối internet",
-  "Readwise sync failed: {{error}}": "Đồng bộ Readwise thất bại: {{error}}"
+  "Readwise sync failed: {{error}}": "Đồng bộ Readwise thất bại: {{error}}",
+  "Reprocess from scratch to current page (keeps cache)": "Reprocess from scratch to current page (keeps cache)",
+  "Processing p. {{start}}-{{end}} of {{total}}": "Processing p. {{start}}-{{end}} of {{total}}",
+  "X-Ray is currently processing.": "X-Ray is currently processing."
 }
