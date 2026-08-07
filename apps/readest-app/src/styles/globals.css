@@ -21,7 +21,7 @@
 :root {
   border-radius: 10px;
   scrollbar-gutter: auto !important;
-  overscroll-behavior: none;
+  overscroll-behavior-x: none;
   background-color: transparent;
 
   --scroll-bg-color: theme('colors.base-200');
