@@ -588,6 +588,7 @@ class NativeBridgePlugin: Plugin {
 
   @objc public override func load(webview: WKWebView) {
     self.webView = webview
+    webview.scrollView.bounces = true
     logger.log("NativeBridgePlugin loaded")
 
     // Suppress the iOS system text-selection edit menu so it never
