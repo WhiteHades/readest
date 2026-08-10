@@ -1,7 +1,21 @@
-import { describe, it, expect, vi, afterEach } from 'vitest';
-import { render, cleanup } from '@testing-library/react';
+import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { render, cleanup, fireEvent, screen } from '@testing-library/react';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+
+const mocks = vi.hoisted(() => ({
+  envConfig: {},
+  settings: {},
+  getConfig: vi.fn(),
+  setConfig: vi.fn(),
+  saveConfig: vi.fn(),
+  updateBooknotes: vi.fn(),
+  addAnnotation: vi.fn(),
+  getViewsById: vi.fn(),
+  setHoveredBookKey: vi.fn(),
+  setSideBarVisible: vi.fn(),
+  onDismiss: vi.fn(),
+}));
 
 /**
  * The note cards shown when tapping an annotation are `.popup-container`s, so
@@ -15,19 +29,35 @@ import relativeTime from 'dayjs/plugin/relativeTime';
  */
 
 vi.mock('@/context/EnvContext', () => ({
-  useEnv: () => ({ appService: { isMobile: false }, envConfig: {} }),
+  useEnv: () => ({ appService: { isMobile: false }, envConfig: mocks.envConfig }),
 }));
 
 vi.mock('@/store/bookDataStore', () => ({
-  useBookDataStore: () => ({ getConfig: () => ({ viewSettings: {} }), setConfig: vi.fn() }),
+  useBookDataStore: () => ({
+    getConfig: mocks.getConfig,
+    setConfig: mocks.setConfig,
+    saveConfig: mocks.saveConfig,
+    updateBooknotes: mocks.updateBooknotes,
+  }),
 }));
 
 vi.mock('@/store/readerStore', () => ({
-  useReaderStore: () => ({ setHoveredBookKey: vi.fn() }),
+  useReaderStore: () => ({
+    getViewsById: mocks.getViewsById,
+    setHoveredBookKey: mocks.setHoveredBookKey,
+  }),
 }));
 
 vi.mock('@/store/sidebarStore', () => ({
-  useSidebarStore: () => ({ setSideBarVisible: vi.fn() }),
+  useSidebarStore: () => ({ setSideBarVisible: mocks.setSideBarVisible }),
+}));
+
+vi.mock('@/store/settingsStore', () => ({
+  useSettingsStore: () => ({ settings: mocks.settings }),
+}));
+
+vi.mock('@/hooks/useTranslation', () => ({
+  useTranslation: () => (key: string) => key,
 }));
 
 vi.mock('@/hooks/useResponsiveSize', () => ({
@@ -37,6 +67,30 @@ vi.mock('@/hooks/useResponsiveSize', () => ({
 import AnnotationNotes from '@/app/reader/components/annotator/AnnotationNotes';
 
 dayjs.extend(relativeTime);
+
+beforeEach(() => {
+  vi.clearAllMocks();
+  let config = {
+    viewSettings: {},
+    booknotes: [
+      {
+        id: 'n1',
+        type: 'annotation',
+        cfi: 'epubcfi(/6/2!/4/1:0)',
+        note: 'Gryphon',
+        text: 'Gryphon',
+        createdAt: 1,
+        updatedAt: 1,
+      },
+    ],
+  };
+  mocks.getConfig.mockImplementation(() => config);
+  mocks.updateBooknotes.mockImplementation((_bookKey, booknotes) => {
+    config = { ...config, booknotes };
+    return config;
+  });
+  mocks.getViewsById.mockReturnValue([{ addAnnotation: mocks.addAnnotation }]);
+});
 
 afterEach(() => {
   cleanup();
@@ -62,7 +116,7 @@ const renderNotes = () =>
       triangleDir='up'
       popupWidth={240}
       popupHeight={120}
-      onDismiss={() => {}}
+      onDismiss={mocks.onDismiss}
     />,
   );
 
@@ -81,5 +135,60 @@ describe('AnnotationNotes popup surface', () => {
     const { container } = renderNotes();
 
     expect(container.querySelector('[class*="text-white"]')).toBeNull();
+  });
+
+  it('edits and persists a note without opening the annotations sidebar', () => {
+    renderNotes();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
+    let editor = screen.getByRole('textbox', { name: 'Note' });
+    expect((editor as HTMLTextAreaElement).value).toBe('Gryphon');
+
+    fireEvent.keyDown(editor, { key: 'Escape' });
+    expect(screen.queryByRole('textbox')).toBeNull();
+    expect(document.activeElement).toBe(screen.getByRole('button', { name: 'Edit' }));
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
+    editor = screen.getByRole('textbox');
+    fireEvent.change(editor, { target: { value: 'Mock Turtle' } });
+    fireEvent.click(screen.getByRole('button', { name: 'Save' }));
+
+    expect(mocks.updateBooknotes).toHaveBeenCalledWith('test', [
+      expect.objectContaining({ id: 'n1', note: 'Mock Turtle' }),
+    ]);
+    expect(mocks.saveConfig).toHaveBeenCalledWith(
+      mocks.envConfig,
+      'test',
+      expect.objectContaining({
+        booknotes: [expect.objectContaining({ id: 'n1', note: 'Mock Turtle' })],
+      }),
+      mocks.settings,
+    );
+    expect(mocks.setSideBarVisible).not.toHaveBeenCalled();
+    expect(screen.queryByRole('textbox')).toBeNull();
+    expect(screen.getByText('Mock Turtle')).not.toBeNull();
+    expect(screen.queryByText('Gryphon')).toBeNull();
+  });
+
+  it('clears a note and removes its reader bubble', () => {
+    renderNotes();
+
+    fireEvent.click(screen.getByRole('button', { name: 'Edit' }));
+    const editor = screen.getByRole('textbox', { name: 'Note' });
+    fireEvent.change(editor, { target: { value: '   ' } });
+    expect((screen.getByRole('button', { name: 'Save' }) as HTMLButtonElement).disabled).toBe(
+      false,
+    );
+    fireEvent.keyDown(editor, { key: 'Enter', ctrlKey: true });
+
+    expect(mocks.updateBooknotes).toHaveBeenCalledWith('test', [
+      expect.objectContaining({ id: 'n1', note: '' }),
+    ]);
+    expect(mocks.addAnnotation).toHaveBeenCalledWith(
+      expect.objectContaining({ id: 'n1', note: '' }),
+      true,
+    );
+    expect(mocks.saveConfig).toHaveBeenCalledOnce();
+    expect(mocks.onDismiss).toHaveBeenCalledOnce();
   });
 });

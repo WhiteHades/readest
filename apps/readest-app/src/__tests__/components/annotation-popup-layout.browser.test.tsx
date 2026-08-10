@@ -73,6 +73,8 @@ vi.mock('@/helpers/settings', () => ({
 }));
 
 vi.mock('@/app/reader/utils/annotatorUtil', () => ({
+  applyNoteBubbleTransition: vi.fn(),
+  decideNoteBubbleTransition: () => 'none',
   getHighlightColorLabel: () => undefined,
 }));
 
