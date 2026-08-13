@@ -93,8 +93,14 @@ test.describe('Annotation', () => {
     await reader.selectText();
     await reader.addNote(noteText);
 
+    const editor = reader.noteEditor.getByRole('textbox');
+    await expect(editor).toHaveValue(noteText);
+    await editor.fill('Edited in the right notebook');
+    await editor.press('Control+Enter');
+    await expect(editor).toHaveValue('Edited in the right notebook');
+
     await reader.openAnnotationsTab();
-    await expect(reader.annotationItems.getByText(noteText)).toBeVisible();
+    await expect(reader.annotationItems.getByText('Edited in the right notebook')).toBeVisible();
   });
 
   test('copies a link to the highlight once Copy Link is enabled', async ({

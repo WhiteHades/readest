@@ -49,9 +49,16 @@ export const useNotebookStore = create<NotebookState>((set, get) => ({
   setNotebookPin: (pinned: boolean) => set({ isNotebookPinned: pinned }),
   setNotebookActiveTab: (tab: NotebookTab) => set({ notebookActiveTab: tab }),
   setNotebookNewAnnotation: (selection: TextSelection | null) =>
-    set({ notebookNewAnnotation: selection }),
+    set({
+      notebookNewAnnotation: selection,
+      ...(selection ? { notebookEditAnnotation: null } : {}),
+    }),
   setNotebookNewHighlightId: (id: string | null) => set({ notebookNewHighlightId: id }),
-  setNotebookEditAnnotation: (note: BookNote | null) => set({ notebookEditAnnotation: note }),
+  setNotebookEditAnnotation: (note: BookNote | null) =>
+    set({
+      notebookEditAnnotation: note,
+      ...(note ? { notebookNewAnnotation: null } : {}),
+    }),
   saveNotebookAnnotationDraft: (key: string, note: string) =>
     set((state) => ({
       notebookAnnotationDrafts: { ...state.notebookAnnotationDrafts, [key]: note },

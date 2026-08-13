@@ -124,6 +124,30 @@ describe('notebookStore', () => {
       expect(useNotebookStore.getState().notebookNewAnnotation).toEqual(selection);
     });
 
+    test('clears the active edit target when starting a new annotation', () => {
+      const note: BookNote = {
+        id: 'note-1',
+        type: 'annotation',
+        cfi: 'epubcfi(/6/2)',
+        note: 'Old note',
+        createdAt: 1000,
+        updatedAt: 1000,
+      };
+      const selection: TextSelection = {
+        key: 'sel-2',
+        text: 'New selection',
+        page: 2,
+        range: new Range(),
+        index: 1,
+      };
+      useNotebookStore.getState().setNotebookEditAnnotation(note);
+
+      useNotebookStore.getState().setNotebookNewAnnotation(selection);
+
+      expect(useNotebookStore.getState().notebookNewAnnotation).toEqual(selection);
+      expect(useNotebookStore.getState().notebookEditAnnotation).toBeNull();
+    });
+
     test('clears annotation when set to null', () => {
       const selection: TextSelection = {
         key: 'sel-1',
@@ -165,6 +189,30 @@ describe('notebookStore', () => {
       };
       useNotebookStore.getState().setNotebookEditAnnotation(note);
       expect(useNotebookStore.getState().notebookEditAnnotation).toEqual(note);
+    });
+
+    test('clears a new annotation when switching to an edit target', () => {
+      const selection: TextSelection = {
+        key: 'sel-1',
+        text: 'New selection',
+        page: 1,
+        range: new Range(),
+        index: 0,
+      };
+      const note: BookNote = {
+        id: 'note-1',
+        type: 'annotation',
+        cfi: 'epubcfi(/6/2)',
+        note: 'Saved note',
+        createdAt: 1000,
+        updatedAt: 1000,
+      };
+      useNotebookStore.getState().setNotebookNewAnnotation(selection);
+
+      useNotebookStore.getState().setNotebookEditAnnotation(note);
+
+      expect(useNotebookStore.getState().notebookEditAnnotation).toEqual(note);
+      expect(useNotebookStore.getState().notebookNewAnnotation).toBeNull();
     });
 
     test('clears edit annotation when set to null', () => {

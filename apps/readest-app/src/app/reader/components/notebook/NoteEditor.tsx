@@ -71,8 +71,7 @@ const NoteEditor: React.FC<NoteEditorProps> = ({ onSave, onEdit }) => {
       if (notebookNewAnnotation) {
         onSave(notebookNewAnnotation, currentValue);
       } else if (notebookEditAnnotation) {
-        notebookEditAnnotation.note = currentValue;
-        onEdit(notebookEditAnnotation);
+        onEdit({ ...notebookEditAnnotation, note: currentValue });
       }
     }
   };

@@ -193,8 +193,9 @@ const Notebook: React.FC = ({}) => {
   // reader leaves the placeholder behind; clean it up against the book we are
   // leaving on the way out (#4791).
   useEffect(() => {
+    setNotebookEditAnnotation(null);
     return () => handleCancelNewAnnotation(sideBarBookKey);
-  }, [sideBarBookKey, handleCancelNewAnnotation]);
+  }, [sideBarBookKey, handleCancelNewAnnotation, setNotebookEditAnnotation]);
 
   const handleClickOverlay = () => {
     setNotebookVisible(false);
@@ -212,6 +213,7 @@ const Notebook: React.FC = ({}) => {
 
     const { booknotes: annotations = [] } = config;
     const existingIndex = findAnnotationAtCfi(annotations, cfi);
+    let savedAnnotation: BookNote;
     if (existingIndex !== -1) {
       // Attach the note to the existing highlight at this CFI instead of
       // creating a second record. The highlight overlay (value = cfi) already
@@ -224,6 +226,7 @@ const Notebook: React.FC = ({}) => {
         updatedAt: Date.now(),
       };
       annotations[existingIndex] = updated;
+      savedAnnotation = updated;
       view?.addAnnotation({ ...updated, value: `${NOTE_PREFIX}${updated.cfi}` });
     } else {
       // No highlight at this CFI yet (e.g. a note added without first
@@ -243,6 +246,7 @@ const Notebook: React.FC = ({}) => {
         createdAt: Date.now(),
         updatedAt: Date.now(),
       };
+      savedAnnotation = annotation;
       view?.addAnnotation(annotation);
       view?.addAnnotation({ ...annotation, value: `${NOTE_PREFIX}${annotation.cfi}` });
       annotations.push(annotation);
@@ -251,7 +255,7 @@ const Notebook: React.FC = ({}) => {
     if (updatedConfig) {
       saveConfig(envConfig, sideBarBookKey, updatedConfig, settings);
     }
-    setNotebookNewAnnotation(null);
+    setNotebookEditAnnotation(savedAnnotation);
     // The placeholder now carries a note (or a fresh unified record was created),
     // so it's a real annotation — drop the cancel-cleanup handle (#4791).
     setNotebookNewHighlightId(null);
@@ -265,19 +269,19 @@ const Notebook: React.FC = ({}) => {
     const { booknotes: annotations = [] } = config;
     const existingIndex = annotations.findIndex((item) => item.id === note.id);
     if (existingIndex === -1) return;
-    if (isDelete) {
-      note.deletedAt = Date.now();
-    } else {
-      note.updatedAt = Date.now();
-    }
-    note.page = progress.page;
-    annotations[existingIndex] = note;
-    view?.addAnnotation({ ...note, value: `${NOTE_PREFIX}${note.cfi}` }, true);
+    const existing = annotations[existingIndex]!;
+    const updated: BookNote = {
+      ...existing,
+      ...(isDelete ? { deletedAt: Date.now() } : { note: note.note, updatedAt: Date.now() }),
+      page: progress.page,
+    };
+    annotations[existingIndex] = updated;
+    view?.addAnnotation({ ...updated, value: `${NOTE_PREFIX}${updated.cfi}` }, true);
     const updatedConfig = updateBooknotes(sideBarBookKey, annotations);
     if (updatedConfig) {
       saveConfig(envConfig, sideBarBookKey, updatedConfig, settings);
     }
-    setNotebookEditAnnotation(null);
+    if (!isDelete) setNotebookEditAnnotation(updated);
   };
 
   const { handleResizeStart: handleDragStart, handleResizeKeyDown: handleDragKeyDown } =
@@ -291,6 +295,15 @@ const Notebook: React.FC = ({}) => {
 
   const config = getConfig(sideBarBookKey);
   const { booknotes: allNotes = [] } = config || {};
+
+  useEffect(() => {
+    if (!notebookEditAnnotation) return;
+    const liveAnnotation = allNotes.some(
+      (note) => note.id === notebookEditAnnotation.id && !note.deletedAt,
+    );
+    if (!liveAnnotation) setNotebookEditAnnotation(null);
+  }, [allNotes, notebookEditAnnotation, setNotebookEditAnnotation]);
+
   const excerptNotes = allNotes
     .filter((note) => note.type === 'excerpt' && note.text && !note.deletedAt)
     .sort((a, b) => a.createdAt - b.createdAt);
